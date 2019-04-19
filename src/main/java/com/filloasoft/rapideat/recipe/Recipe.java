@@ -22,6 +22,10 @@ public class Recipe {
     private List<String> recipeDiets;
     @ElementCollection
     private List<String> recipeInstructions;
+    @ElementCollection
+    private List<Product> unusedIngredients;
+
+    
     
     
 	public String getRecipeID() {
@@ -67,6 +71,12 @@ public class Recipe {
 	}
 	public void setRecipeDiets(List<String> recipeDiets) {
 		this.recipeDiets = recipeDiets;
+	}
+	public List<Product> getUnusedIngredients() {
+		return unusedIngredients;
+	}
+	public void setUnusedIngredients(List<Product> unusedIngredients) {
+		this.unusedIngredients = unusedIngredients;
 	}
 	
 }

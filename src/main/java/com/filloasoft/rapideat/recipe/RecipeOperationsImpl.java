@@ -16,10 +16,6 @@ import com.filloasoft.rapideat.product.Product;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mashape.unirest.http.exceptions.UnirestException;
-
-
-
 
 
 @Repository
@@ -30,7 +26,7 @@ public class RecipeOperationsImpl implements RecipeOperations {
 	private String key;
 	
 	@Override
-	public Recipe getRecipe(String recipeID) throws UnirestException, IOException {
+	public Recipe getRecipe(String recipeID) throws  IOException {
 		
 		URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/"+recipeID+"/information");
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -75,17 +71,95 @@ public class RecipeOperationsImpl implements RecipeOperations {
 		
 		JsonArray arr2 = convertedObject.getAsJsonArray("analyzedInstructions");
 		List<String> listSteps = new ArrayList<String>();
-		JsonArray arr3 = arr2.get(0).getAsJsonObject().getAsJsonArray("steps");
-		
-		for(int i = 0; i < arr3.size(); i++){
-			listSteps.add(arr3.get(i).getAsJsonObject().get("step").toString().replaceAll("[^\\w\\s]",""));
+		try {
+			JsonArray arr3 = arr2.get(0).getAsJsonObject().getAsJsonArray("steps");
+			for(int i = 0; i < arr3.size(); i++){
+				listSteps.add(arr3.get(i).getAsJsonObject().get("step").toString().replaceAll("[^\\w\\s]",""));
+			}
+			
+			recipe.setRecipeInstructions(listSteps);
+		}catch (Exception e){
+			
 		}
 		
-		recipe.setRecipeInstructions(listSteps);
-		
-				
 		return recipe;
 		
+	}
+
+	@Override
+	public List<Recipe> getRecipesByIngredients(String ingredientsKeywords, int numResults) throws IOException {
+		
+		
+		String ingredientsKeywords2 = ingredientsKeywords.replace("%", "%2C");
+		
+		
+		URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?number="+numResults+"&ranking=1&ignorePantry=false&ingredients="+ingredientsKeywords2);
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
+		con.setRequestProperty("X-RapidAPI-Key", key);
+		
+		InputStream in = con.getInputStream();
+		String encoding = con.getContentEncoding();
+		encoding = encoding == null ? "UTF-8" : encoding;
+		String body = IOUtils.toString(in, encoding);
+		
+		String json = body;
+		JsonArray convertedObject = new Gson().fromJson(json, JsonArray.class);
+		
+
+		List<Recipe> listRecipe = new ArrayList<Recipe>();
+		
+		
+		for(int i = 0; i < convertedObject.size(); i++){
+			listRecipe.add(getRecipe(convertedObject.get(i).getAsJsonObject().get("id").toString()));
+		}
+
+		
+		return listRecipe;
+	}
+	
+public List<Recipe> FullRecipesSearch(String query, String cuisine, String includeIngredients,
+		String excludeIngredients, String intolerances, String type ) throws IOException {
+		
+		String s = new StringBuilder()
+				   .append("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/searchComplex?")
+		           .append("query="+query)
+		           .append("&cuisine="+cuisine)
+		           .append("&includeIngredients="+includeIngredients)
+		           .append("&excludeIngredients="+excludeIngredients)
+		           .append("&intolerances="+intolerances)
+		           .append("&type="+type)
+		           .append("&ranking=2")
+		           .append("&limitLicense=false")
+		           .append("&offset=0")
+		           .append("&number=1")
+		           .toString();
+		
+		URL url = new URL(s);
+		
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
+		con.setRequestProperty("X-RapidAPI-Key", key);
+		
+		InputStream in = con.getInputStream();
+		String encoding = con.getContentEncoding();
+		encoding = encoding == null ? "UTF-8" : encoding;
+		String body = IOUtils.toString(in, encoding);
+		
+		String json = body;
+		JsonArray convertedObject = new Gson().fromJson(json, JsonArray.class);
+		
+
+		List<Recipe> listRecipe = new ArrayList<Recipe>();
+		
+		
+		for(int i = 0; i < convertedObject.size(); i++){
+			listRecipe.add(getRecipe(convertedObject.get(i).getAsJsonObject().get("id").toString()));
+		}
+		
+		return listRecipe;
 	}
 		
 }

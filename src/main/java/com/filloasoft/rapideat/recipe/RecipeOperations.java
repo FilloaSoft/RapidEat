@@ -1,12 +1,14 @@
 package com.filloasoft.rapideat.recipe;
 
 import java.io.IOException;
+import java.util.List;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
 
 public interface RecipeOperations{
 	
 	
-	public Recipe getRecipe(String recipeID) throws UnirestException, IOException;
+	public Recipe getRecipe(String recipeID) throws  IOException;
+	
+	public List<Recipe> getRecipesByIngredients(String ingredientsKeywords, int numResults) throws  IOException;
 	
 }

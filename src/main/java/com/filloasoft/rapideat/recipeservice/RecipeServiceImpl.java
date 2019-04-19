@@ -3,6 +3,7 @@ package com.filloasoft.rapideat.recipeservice;
 
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.filloasoft.rapideat.recipe.Recipe;
 import com.filloasoft.rapideat.recipe.RecipeOperations;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
 
 
 @Service
@@ -23,8 +23,13 @@ public class RecipeServiceImpl implements RecipeService {
 	private RecipeOperations recipeOperations;
 
 	@Override
-	public Recipe getRecipe(String recipeID) throws UnirestException, IOException {
+	public Recipe getRecipe(String recipeID) throws  IOException {
 		return recipeOperations.getRecipe(recipeID);
+	}
+
+	@Override
+	public List<Recipe> getRecipesByIngredients(String ingredientsKeywords, int numResults) throws  IOException {
+		return recipeOperations.getRecipesByIngredients(ingredientsKeywords, 5);
 	}
 
 
