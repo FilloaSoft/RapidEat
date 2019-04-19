@@ -23,6 +23,7 @@ public class ProductServiceImpl implements ProductService {
 	public Product readProductBarcode(String barcode) {
 		
 		return productOperations.getProductByBarcode(barcode);
+
 	}
 
 
