@@ -1,6 +1,6 @@
 package com.filloasoft.rapideat.model.repository;
 
-import com.filloasoft.rapideat.model.entity.User;
+import com.filloasoft.rapideat.model.entity.UserDiet;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
  * @author Adrian
  */
 @Repository
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserDietRepository extends CrudRepository<UserDiet, Long> {
 
 }

@@ -2,18 +2,27 @@ package com.filloasoft.rapideat.recipe;
 
 import java.util.List;
 
-import com.filloasoft.rapideat.product.Product;
+import com.filloasoft.rapideat.product.OldProduct;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-public class Recipe {
+@Entity
+public class OldRecipe {
 
+    @Id
     private String recipeID;
     private String recipeName;
-    private List<Product> recipeIngredients;
+    @ElementCollection
+    private List<OldProduct> recipeIngredients;
     private String recipeImage;
     private String cookingTimeMinutes;
+    @ElementCollection
     private List<String> recipeDiets;
+    @ElementCollection
     private List<String> recipeInstructions;
-    private List<Product> unusedIngredients;
+    @ElementCollection
+    private List<OldProduct> unusedIngredients;
 
     public String getRecipeID() {
         return recipeID;
@@ -31,11 +40,11 @@ public class Recipe {
         this.recipeName = recipeName;
     }
 
-    public List<Product> getRecipeIngredients() {
+    public List<OldProduct> getRecipeIngredients() {
         return recipeIngredients;
     }
 
-    public void setRecipeIngredients(List<Product> recipeIngredients) {
+    public void setRecipeIngredients(List<OldProduct> recipeIngredients) {
         this.recipeIngredients = recipeIngredients;
     }
 
@@ -71,12 +80,11 @@ public class Recipe {
         this.recipeDiets = recipeDiets;
     }
 
-    public List<Product> getUnusedIngredients() {
+    public List<OldProduct> getUnusedIngredients() {
         return unusedIngredients;
     }
 
-    public void setUnusedIngredients(List<Product> unusedIngredients) {
+    public void setUnusedIngredients(List<OldProduct> unusedIngredients) {
         this.unusedIngredients = unusedIngredients;
     }
-
 }

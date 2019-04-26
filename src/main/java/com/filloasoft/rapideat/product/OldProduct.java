@@ -1,10 +1,17 @@
 package com.filloasoft.rapideat.product;
 
+import java.io.Serializable;
 import java.util.List;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-public class Product {
+@Entity
+public class OldProduct {
 
+    @Id
     private String id;
+
     private String product_name;
     private String generic_name;
     private String brands;
@@ -23,9 +30,13 @@ public class Product {
     private String stores;
     //https://world.openfoodfacts.org/nutriscore
     private String nutritionScore;
+    @ElementCollection
     private List<String> labels_tags;
+    @ElementCollection
     private List<String> categories_hierarchy;
+    @ElementCollection
     private List<String> Allergens;
+    @ElementCollection
     private List<String> ingredients_text;
 
     public String getId() {
