@@ -28,6 +28,13 @@ public class RecipeController {
    	public List<Recipe> getRecipeByIngredients(@RequestParam String ingredients) throws IOException {
    		return recipeService.getRecipesByIngredients(ingredients, 5);
    	}
+    
+    //(calquer tipo) http://localhost:8085/recipe/random?tags
+    //(Random filtradas) http://localhost:8085/recipe/random?tags=vegetarian%burger
+    @GetMapping("/recipe/random")
+   	public List<Recipe> getRandomRecipes(@RequestParam(required=false) String tags) throws IOException {
+   		return recipeService.getRandomRecipes(Integer.toString(10), tags);
+   	}
 
 
 }

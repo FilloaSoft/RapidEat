@@ -12,6 +12,9 @@ import com.filloasoft.rapideat.recipe.Recipe;
 public interface RecipeService {
 
 	public Recipe getRecipe(String recipeID) throws IOException;
+	
 	public List<Recipe> getRecipesByIngredients(String ingredientsKeywords, int numResults) throws IOException;
+	
+	public List<Recipe> getRandomRecipes(String number, String tags) throws  IOException ;
 
 }

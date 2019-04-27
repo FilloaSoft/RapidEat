@@ -32,6 +32,11 @@ public class RecipeServiceImpl implements RecipeService {
 		return recipeOperations.getRecipesByIngredients(ingredientsKeywords, 5);
 	}
 
+	@Override
+	public List<Recipe> getRandomRecipes(String number, String tags) throws IOException {
+		return recipeOperations.getRandomRecipes(number, tags);
+	}
+
 
 
 

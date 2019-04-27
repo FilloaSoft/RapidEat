@@ -65,6 +65,10 @@ public class RecipeOperationsImpl implements RecipeOperations {
 			List<String> categ_hier = new ArrayList<String>();
 			categ_hier.add(arr1.get(i).getAsJsonObject().get("aisle").toString().replace(";", " ").replaceAll("[^\\w\\s]",""));
 			p.setCategories_hierarchy(categ_hier);
+			p.setQuantity(arr1.get(i).getAsJsonObject().get("amount").toString().replaceAll("[^\\w\\s]","")+" "
+			+arr1.get(i).getAsJsonObject().get("unit").toString().replaceAll("[^\\w\\s]",""));
+			String imgstrg = arr1.get(i).getAsJsonObject().get("image").toString();
+			p.setImage_url("https://spoonacular.com/cdn/ingredients_100x100/"+imgstrg.substring(1, imgstrg.length()-1));
 			listIngredients.add(p);
 		}
 		recipe.setRecipeIngredients(listIngredients);
@@ -161,5 +165,40 @@ public List<Recipe> FullRecipesSearch(String query, String cuisine, String inclu
 		
 		return listRecipe;
 	}
+
+@Override
+public List<Recipe> getRandomRecipes(String number, String tags) throws  IOException {
+
+	String tags2= tags.replace("%", "%2C");
+		
+	URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/random?number="+number+"&tags="+tags2);
+	
+	HttpURLConnection con = (HttpURLConnection) url.openConnection();
+	con.setRequestMethod("GET");
+	con.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
+	con.setRequestProperty("X-RapidAPI-Key", key);
+	
+	InputStream in = con.getInputStream();
+	String encoding = con.getContentEncoding();
+	encoding = encoding == null ? "UTF-8" : encoding;
+	String body = IOUtils.toString(in, encoding);
+	
+	String json = body;
+	JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+	
+	JsonArray convertedObject2 = convertedObject.getAsJsonArray("recipes");
+
+	List<Recipe> listRecipe = new ArrayList<Recipe>();
+	
+	
+	for(int i = 0; i < convertedObject2.size(); i++){
+		listRecipe.add(getRecipe(convertedObject2.get(i).getAsJsonObject().get("id").toString()));
+	}
+
+	
+	return listRecipe;
+}
+
+
 		
 }

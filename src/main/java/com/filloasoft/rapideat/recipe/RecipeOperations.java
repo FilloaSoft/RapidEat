@@ -11,4 +11,6 @@ public interface RecipeOperations{
 	
 	public List<Recipe> getRecipesByIngredients(String ingredientsKeywords, int numResults) throws  IOException;
 	
+	public List<Recipe> getRandomRecipes(String number, String tags) throws  IOException ;
+
 }
