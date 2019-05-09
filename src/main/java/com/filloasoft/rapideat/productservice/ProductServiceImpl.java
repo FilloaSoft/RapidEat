@@ -2,6 +2,8 @@ package com.filloasoft.rapideat.productservice;
 
 
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -24,6 +26,12 @@ public class ProductServiceImpl implements ProductService {
 		
 		return productOperations.getProductByBarcode(barcode);
 
+	}
+
+
+	@Override
+	public Product getProductByName(String name) throws IOException {
+		return productOperations.getProductByName(name);
 	}
 
 

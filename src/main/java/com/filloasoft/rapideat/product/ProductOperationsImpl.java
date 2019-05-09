@@ -5,20 +5,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Value;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 
-@Repository
+
 public class ProductOperationsImpl implements ProductOperations {
+	
+	@Value("${spoonacular.key}")
+	private String key;
 
 	private static String readAll(Reader rd) throws IOException {
 	    StringBuilder sb = new StringBuilder();
@@ -99,10 +107,106 @@ public class ProductOperationsImpl implements ProductOperations {
 
 
 
-			} catch (JSONException e) {
-			} catch (IOException e) {
+			} catch (Exception e) {
+				return null;
 			}
 	
+		return product;
+	}
+	
+	public JsonObject getProductinfo(String id)  throws IOException {
+		URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/products/"+id);
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
+		con.setRequestProperty("X-RapidAPI-Key", key);
+		
+		InputStream in = con.getInputStream();
+		String encoding = con.getContentEncoding();
+		encoding = encoding == null ? "UTF-8" : encoding;
+		String body = IOUtils.toString(in, encoding);
+		
+		String json = body;
+		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+		
+		return convertedObject;
+	}
+
+	@Override
+	public Product getProductByName(String name)  throws IOException {
+		Product product = new Product();
+		
+		String name2 = name.replaceAll("\\s+", "+");
+		URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/products/search?number=1&query="+name2);
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
+		con.setRequestProperty("X-RapidAPI-Key", key);
+		
+		InputStream in = con.getInputStream();
+		String encoding = con.getContentEncoding();
+		encoding = encoding == null ? "UTF-8" : encoding;
+		String body = IOUtils.toString(in, encoding);
+		
+		String json = body;
+		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+
+		JsonArray arr = convertedObject.getAsJsonArray("products");
+		
+		try {
+			String nmestrg = arr.get(0).getAsJsonObject().get("title").toString();
+			product.setProduct_name(nmestrg.substring(1, nmestrg.length()-1));
+			
+			String imgstrg = arr.get(0).getAsJsonObject().get("image").toString();
+			product.setImage_url(imgstrg.substring(1, imgstrg.length()-1));
+			
+			
+			JsonObject convertedObject2 =  getProductinfo(arr.get(0).getAsJsonObject().get("id").toString());
+			JsonArray arr1 = convertedObject2.getAsJsonArray("badges");
+			
+			List<String> badgeslist = new ArrayList<String>();
+			for(int i = 0; i < arr1.size(); i++){			
+				badgeslist.add(arr1.get(i).toString().replaceAll("[^\\w\\s]","").replaceAll("_"," "));
+			}
+			
+			product.setAllergens(badgeslist);
+			
+			JsonArray arr2 = convertedObject2.getAsJsonArray("ingredients");
+			
+			List<String> inglist = new ArrayList<String>();
+			for(int i = 0; i < arr2.size(); i++){			
+				inglist.add(arr2.get(i).getAsJsonObject().get("name").toString().replaceAll("[^\\w\\s]",""));
+			}
+			
+			product.setIngredients_text(inglist);
+			
+			
+			JsonArray arr3 = convertedObject2.getAsJsonArray("breadcrumbs");
+			
+			List<String> tags = new ArrayList<String>();
+			for(int i = 0; i < arr3.size(); i++){			
+				tags.add(arr3.get(i).toString().replaceAll("[^\\w\\s]",""));
+			}
+			
+			product.setLabel_tags(tags);
+			product.setGeneric_name(tags.get(0));
+			
+			product.setEnergy(convertedObject2.getAsJsonObject("nutrition").get("calories").toString());
+			
+			String carbs = convertedObject2.getAsJsonObject("nutrition").get("carbs").toString();
+			product.setCarbohydrates(carbs.substring(1, carbs.length()-1));
+			String protein =convertedObject2.getAsJsonObject("nutrition").get("protein").toString();
+			product.setProteins(protein.substring(1, protein.length()-1));
+			String fat =convertedObject2.getAsJsonObject("nutrition").get("fat").toString();
+			product.setFat(fat.substring(1, fat.length()-1));
+			String serving_size =convertedObject2.get("serving_size").toString();
+			product.setServing_size(serving_size.substring(1, serving_size.length()-1));
+
+
+		}catch(Exception e) {
+			return null;
+		}
+		
 		return product;
 	}
 	
