@@ -66,7 +66,16 @@
 		</dependency>
 		
 		
-		
+		<dependency>
+		    <groupId>co.aurasphere</groupId>
+		    <artifactId>jyandex</artifactId>
+		    <version>1.0.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.glassfish.jersey.inject</groupId>
+		    <artifactId>jersey-hk2</artifactId>
+		    <version>2.28</version> <!--$NO-MVN-MAN-VER$-->
+		</dependency>
 		<dependency>
         <groupId>com.mashape.unirest</groupId>
 	        <artifactId>unirest-java</artifactId>
@@ -86,6 +95,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			
 		</plugins>
 	</build>
 	

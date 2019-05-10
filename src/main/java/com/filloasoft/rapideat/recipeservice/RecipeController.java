@@ -23,7 +23,8 @@ public class RecipeController {
 		return recipeService.getRecipe(id);
 	}
     
-    //exemplo de petición: http://localhost:8085/recipe/search?ingredients=tomato%chicken%onion
+    //exemplo de petición: http://localhost:8085/recipe/search?ingredients=tomato%2Cchicken%2Conion
+    //UTILIZAR SEPARADORES "%2C"
     @GetMapping("/recipe/search")
    	public List<Recipe> getRecipeByIngredients(@RequestParam String ingredients) throws IOException {
    		return recipeService.getRecipesByIngredients(ingredients, 5);

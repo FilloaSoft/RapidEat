@@ -17,13 +17,18 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import co.aurasphere.jyandex.Jyandex;
+import co.aurasphere.jyandex.dto.Language;
+
 
 @Repository
 public class RecipeOperationsImpl implements RecipeOperations {
 	//resources -> application.properties
-	
 	@Value("${spoonacular.key}")
 	private String key;
+	
+	@Value("${traductor.key}")
+	private String keytranslate;
 	
 	@Override
 	public Recipe getRecipe(String recipeID) throws  IOException {
@@ -92,11 +97,13 @@ public class RecipeOperationsImpl implements RecipeOperations {
 
 	@Override
 	public List<Recipe> getRecipesByIngredients(String ingredientsKeywords, int numResults) throws IOException {
+		String ingredientsKeywords2 = new String();
+		Jyandex client = new Jyandex(keytranslate);		
+
+		String[] ingredientsTranslated = client.translateText(ingredientsKeywords, Language.SPANISH, Language.ENGLISH).getTranslatedText();
+		ingredientsKeywords2 = ingredientsTranslated[0].replaceAll(",", "%2C") ;
 		
-		
-		String ingredientsKeywords2 = ingredientsKeywords.replace("%", "%2C");
-		
-		
+
 		URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?number="+numResults+"&ranking=1&ignorePantry=false&ingredients="+ingredientsKeywords2);
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("GET");

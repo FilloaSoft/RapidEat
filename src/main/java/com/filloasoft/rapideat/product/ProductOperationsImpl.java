@@ -22,12 +22,19 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import co.aurasphere.jyandex.Jyandex;
+import co.aurasphere.jyandex.dto.Language;
+
 
 @Repository
 public class ProductOperationsImpl implements ProductOperations {
-	
+	//resources -> application.properties
+
 	@Value("${spoonacular.key}")
 	private String key;
+	
+	@Value("${traductor.key}")
+	private String keytranslate;
 
 	private static String readAll(Reader rd) throws IOException {
 	    StringBuilder sb = new StringBuilder();
@@ -137,7 +144,12 @@ public class ProductOperationsImpl implements ProductOperations {
 	public Product getProductByName(String name)  throws IOException {
 		Product product = new Product();
 		
-		String name2 = name.replaceAll("\\s+", "+");
+		Jyandex client = new Jyandex(keytranslate);		
+
+		String[] ingredientsTranslated = client.translateText(name, Language.SPANISH, Language.ENGLISH).getTranslatedText();
+		String name2 = ingredientsTranslated[0].replaceAll("\\s+", "+") ;
+		
+		
 		URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/products/search?number=1&query="+name2);
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("GET");
