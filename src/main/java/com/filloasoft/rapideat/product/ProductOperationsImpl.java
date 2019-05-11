@@ -48,9 +48,11 @@ public class ProductOperationsImpl implements ProductOperations {
 	public static JSONObject readJsonFromUrl(String barcode) throws IOException, JSONException {
 	    InputStream is = new URL("http://world.openfoodfacts.org/api/v0/product/"+barcode+".json").openStream();
 	    try {
+	
 	      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 	      String jsonText = readAll(rd);
 	      JSONObject json = new JSONObject(jsonText);
+
 	      return json;
 	    } finally {
 	      is.close();
@@ -63,10 +65,19 @@ public class ProductOperationsImpl implements ProductOperations {
 		Product product = new Product();
 
 			try {
+
 				jsonOutput = readJsonFromUrl(barcode);
+
 				product.setId(barcode);
 				product.setProduct_name(jsonOutput.getJSONObject("product").get("product_name").toString());
-				product.setGeneric_name(jsonOutput.getJSONObject("product").get("generic_name").toString());
+				
+				try {
+					product.setGeneric_name(jsonOutput.getJSONObject("product").get("generic_name").toString());
+
+				}catch(Exception e) {
+					
+				}
+				
 				product.setBrands(jsonOutput.getJSONObject("product").get("brands").toString());
 				
 				JSONArray arr3 = jsonOutput.getJSONObject("product").getJSONArray("ingredients_tags");
@@ -75,7 +86,7 @@ public class ProductOperationsImpl implements ProductOperations {
 					listIngredients.add(arr3.getString(a).substring(3).replace("-", " "));
 				}
 				product.setIngredients_text(listIngredients);
-				
+
 				product.setTraces(jsonOutput.getJSONObject("product").get("traces").toString());				
 				product.setServing_size(jsonOutput.getJSONObject("product").get("serving_size").toString());
 				product.setIngredients_from_palm_oil(jsonOutput.getJSONObject("product").get("ingredients_from_palm_oil_n").toString());
@@ -149,8 +160,8 @@ public class ProductOperationsImpl implements ProductOperations {
 		String[] ingredientsTranslated = client.translateText(name, Language.SPANISH, Language.ENGLISH).getTranslatedText();
 		String name2 = ingredientsTranslated[0].replaceAll("\\s+", "+") ;
 		
-		
 		URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/products/search?number=1&query="+name2);
+
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("GET");
 		con.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
@@ -167,9 +178,10 @@ public class ProductOperationsImpl implements ProductOperations {
 		JsonArray arr = convertedObject.getAsJsonArray("products");
 		
 		try {
+
 			String nmestrg = arr.get(0).getAsJsonObject().get("title").toString();
 			product.setProduct_name(nmestrg.substring(1, nmestrg.length()-1));
-			
+
 			String imgstrg = arr.get(0).getAsJsonObject().get("image").toString();
 			product.setImage_url(imgstrg.substring(1, imgstrg.length()-1));
 			
@@ -180,10 +192,11 @@ public class ProductOperationsImpl implements ProductOperations {
 			List<String> badgeslist = new ArrayList<String>();
 			for(int i = 0; i < arr1.size(); i++){			
 				badgeslist.add(arr1.get(i).toString().replaceAll("[^\\w\\s]","").replaceAll("_"," "));
+			
 			}
 			
 			product.setAllergens(badgeslist);
-			
+
 			JsonArray arr2 = convertedObject2.getAsJsonArray("ingredients");
 			
 			List<String> inglist = new ArrayList<String>();
@@ -204,17 +217,23 @@ public class ProductOperationsImpl implements ProductOperations {
 			product.setLabel_tags(tags);
 			product.setGeneric_name(tags.get(0));
 			
-			product.setEnergy(convertedObject2.getAsJsonObject("nutrition").get("calories").toString());
-			
-			String carbs = convertedObject2.getAsJsonObject("nutrition").get("carbs").toString();
-			product.setCarbohydrates(carbs.substring(1, carbs.length()-1));
-			String protein =convertedObject2.getAsJsonObject("nutrition").get("protein").toString();
-			product.setProteins(protein.substring(1, protein.length()-1));
-			String fat =convertedObject2.getAsJsonObject("nutrition").get("fat").toString();
-			product.setFat(fat.substring(1, fat.length()-1));
-			String serving_size =convertedObject2.get("serving_size").toString();
-			product.setServing_size(serving_size.substring(1, serving_size.length()-1));
-
+			try {
+				product.setEnergy(convertedObject2.getAsJsonObject("nutrition").get("calories").toString());
+	
+				String carbs = convertedObject2.getAsJsonObject("nutrition").get("carbs").toString();
+				product.setCarbohydrates(carbs.substring(1, carbs.length()-1));
+	
+				String protein =convertedObject2.getAsJsonObject("nutrition").get("protein").toString();
+				product.setProteins(protein.substring(1, protein.length()-1));
+	
+				String fat =convertedObject2.getAsJsonObject("nutrition").get("fat").toString();
+				product.setFat(fat.substring(1, fat.length()-1));
+	
+				String serving_size =convertedObject2.get("serving_size").toString();
+				product.setServing_size(serving_size.substring(1, serving_size.length()-1));
+			}catch(Exception e) {
+				
+			}
 
 		}catch(Exception e) {
 			return null;
