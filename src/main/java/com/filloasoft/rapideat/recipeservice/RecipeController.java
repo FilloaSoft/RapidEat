@@ -36,6 +36,12 @@ public class RecipeController {
    	public List<Recipe> getRandomRecipes(@RequestParam(required=false) String tags) throws IOException {
    		return recipeService.getRandomRecipes(Integer.toString(10), tags);
    	}
+    
+  //http://localhost:8085/recipe/chat?text=calories+banana
+    @GetMapping("/recipe/chat")
+   	public List<String> chatBot(@RequestParam(required=false) String text) throws IOException {
+   		return recipeService.chatBot(text);
+   	}
 
 
 }

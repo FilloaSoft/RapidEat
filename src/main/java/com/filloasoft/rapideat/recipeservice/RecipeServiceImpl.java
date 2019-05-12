@@ -37,6 +37,11 @@ public class RecipeServiceImpl implements RecipeService {
 		return recipeOperations.getRandomRecipes(number, tags);
 	}
 
+	@Override
+	public List<String> chatBot(String text) throws IOException {
+		return recipeOperations.chatBot(text);
+	}
+
 
 
 

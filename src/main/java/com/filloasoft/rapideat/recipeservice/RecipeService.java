@@ -16,5 +16,7 @@ public interface RecipeService {
 	public List<Recipe> getRecipesByIngredients(String ingredientsKeywords, int numResults) throws IOException;
 	
 	public List<Recipe> getRandomRecipes(String number, String tags) throws  IOException ;
+	
+	public List<String>  chatBot(String text) throws  IOException ;
 
 }

@@ -206,6 +206,53 @@ public List<Recipe> getRandomRecipes(String number, String tags) throws  IOExcep
 	return listRecipe;
 }
 
+@Override
+public List<String> chatBot(String text) throws IOException {
+	
+	Jyandex client = new Jyandex(keytranslate);		
 
+	String[] ingredientsTranslated = client.translateText(text, Language.SPANISH, Language.ENGLISH).getTranslatedText();
+	String text2 = ingredientsTranslated[0].replaceAll("\\s+", "+");
+	//.replaceAll("\\s+", "+")
+	URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/converse?text="+text2);
+	HttpURLConnection con = (HttpURLConnection) url.openConnection();
+	con.setRequestMethod("GET");
+	con.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
+	con.setRequestProperty("X-RapidAPI-Key", key);
+	
+	InputStream in = con.getInputStream();
+	String encoding = con.getContentEncoding();
+	encoding = encoding == null ? "UTF-8" : encoding;
+	String body = IOUtils.toString(in, encoding);
+	
+	String json = body;
+	JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+
+	List<String> lista = new ArrayList<>();
+	String response = convertedObject.get("answerText").toString();
+	response = response.substring(1, response.length()-1);
+	
+	
+	JsonArray arr = convertedObject.getAsJsonArray("media");
+	
+	if (arr.size()==0)  {
+		if (((response.indexOf("Here are")) != -1) && ((response.indexOf("recipes")) != -1)) {
+			lista.add("Sorry I did not understand the question.");
+		}else {
+			lista.add(response);
+		}
+		
+	}else {
+		lista.add(response);
+	}
+	
+	if (arr.size()>0) {
+		for(int i = 0; i < arr.size(); i++){
+			lista.add(arr.get(i).getAsJsonObject().get("link").getAsString());
+		}
+
+	}
+	return lista;
+}
 		
 }
