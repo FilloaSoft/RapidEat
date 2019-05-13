@@ -35,5 +35,11 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 
+	@Override
+	public Product getProductCameraImage(String name) throws IOException {
+		return productOperations.getProductCameraImage(name);
+	}
+
+
 }
 

@@ -101,7 +101,7 @@ public class RecipeOperationsImpl implements RecipeOperations {
 		Jyandex client = new Jyandex(keytranslate);		
 
 		String[] ingredientsTranslated = client.translateText(ingredientsKeywords, Language.SPANISH, Language.ENGLISH).getTranslatedText();
-		ingredientsKeywords2 = ingredientsTranslated[0].replaceAll(",", "%2C") ;
+		ingredientsKeywords2 = ingredientsTranslated[0].replaceAll(",", "%2C").replaceAll(" ", "+") ;
 		
 
 		URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?number="+numResults+"&ranking=1&ignorePantry=false&ingredients="+ingredientsKeywords2);

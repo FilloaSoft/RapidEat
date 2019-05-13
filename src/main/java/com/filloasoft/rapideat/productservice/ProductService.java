@@ -13,4 +13,7 @@ public interface ProductService {
 	
 	public  Product getProductByName(String name)  throws IOException;
 
+	public Product getProductCameraImage(String name)  throws IOException;
+
+
 }

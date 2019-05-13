@@ -28,4 +28,9 @@ public class ProductController {
    	public Product getProductbyName(@RequestParam String name) throws IOException {
    		return productService.getProductByName(name);
    	}
+    
+    @GetMapping("/product/image")
+   	public Product getProductCameraImage(@RequestParam String name) throws IOException {
+   		return productService.getProductCameraImage(name);
+   	}
 }
