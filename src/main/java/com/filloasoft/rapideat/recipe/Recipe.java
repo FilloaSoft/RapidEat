@@ -17,6 +17,7 @@ public class Recipe {
     @ElementCollection
     private List<Product> recipeIngredients;
     private String recipeImage;
+    private String recipeURL;
     private String cookingTimeMinutes;
     @ElementCollection
     private List<String> recipeDiets;
@@ -77,6 +78,12 @@ public class Recipe {
 	}
 	public void setUnusedIngredients(List<Product> unusedIngredients) {
 		this.unusedIngredients = unusedIngredients;
+	}
+	public String getRecipeURL() {
+		return recipeURL;
+	}
+	public void setRecipeURL(String recipeURL) {
+		this.recipeURL = recipeURL;
 	}
 	
 }

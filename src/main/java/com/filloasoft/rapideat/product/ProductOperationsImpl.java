@@ -190,7 +190,7 @@ public class ProductOperationsImpl implements ProductOperations {
         	 String[] ingredient = line.split(cvsSplitBy);
         	 if (ingredient[0].equals(name.toLowerCase())) {
         		        		
-        		URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/"+ingredient[1]+"/information");
+        		URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/"+ingredient[1]+"/information?amount=100&unit=gram");
 
         		HttpURLConnection con = (HttpURLConnection) url.openConnection();
         		con.setRequestMethod("GET");
@@ -214,7 +214,24 @@ public class ProductOperationsImpl implements ProductOperations {
 	 			p.setCategories_hierarchy(categ_hier);
 	 			String imgstrg = convertedObject.get("image").getAsString();
 	 			p.setImage_url("https://spoonacular.com/cdn/ingredients_100x100/"+imgstrg);
+	 			
+        		p.setQuantity(convertedObject.get("nutrition").getAsJsonObject().get("weightPerServing").getAsJsonObject()
+        				.get("amount").getAsString()
+        				+" "+convertedObject.get("nutrition").getAsJsonObject().get("weightPerServing").getAsJsonObject()
+        				.get("unit").getAsString());
         		
+        		p.setEnergy(convertedObject.get("nutrition").getAsJsonObject().getAsJsonArray("nutrients").get(0)
+        				.getAsJsonObject().get("amount").getAsString()+" "+convertedObject.get("nutrition")
+        				.getAsJsonObject().getAsJsonArray("nutrients").get(0).getAsJsonObject().get("unit").getAsString());
+        		p.setFat(convertedObject.get("nutrition").getAsJsonObject().getAsJsonArray("nutrients").get(0)
+        				.getAsJsonObject().get("amount").getAsString()+" "+convertedObject.get("nutrition")
+        				.getAsJsonObject().getAsJsonArray("nutrients").get(1).getAsJsonObject().get("unit").getAsString());
+        		p.setSugars(convertedObject.get("nutrition").getAsJsonObject().getAsJsonArray("nutrients").get(0)
+        				.getAsJsonObject().get("amount").getAsString()+" "+convertedObject.get("nutrition")
+        				.getAsJsonObject().getAsJsonArray("nutrients").get(4).getAsJsonObject().get("unit").getAsString());
+        		p.setCarbohydrates(convertedObject.get("nutrition").getAsJsonObject().getAsJsonArray("nutrients").get(0)
+        				.getAsJsonObject().get("amount").getAsString()+" "+convertedObject.get("nutrition")
+        				.getAsJsonObject().getAsJsonArray("nutrients").get(3).getAsJsonObject().get("unit").getAsString());
 	 			return p;
         	 }
         			 

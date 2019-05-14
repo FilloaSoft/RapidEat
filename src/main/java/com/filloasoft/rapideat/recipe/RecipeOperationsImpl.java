@@ -51,6 +51,7 @@ public class RecipeOperationsImpl implements RecipeOperations {
 		
 		recipe.setRecipeID(recipeID);
 		recipe.setRecipeName(convertedObject.get("title").toString().replaceAll("[^\\w\\s]",""));
+		recipe.setRecipeURL(convertedObject.get("spoonacularSourceUrl").getAsString());
 		recipe.setCookingTimeMinutes(convertedObject.get("readyInMinutes").toString());
 		
 		JsonArray arr = convertedObject.getAsJsonArray("diets");
@@ -67,6 +68,7 @@ public class RecipeOperationsImpl implements RecipeOperations {
 		for(int i = 0; i < arr1.size(); i++){
 			Product p = new Product();
 			p.setProduct_name(arr1.get(i).getAsJsonObject().get("name").toString().replaceAll("[^\\w\\s]",""));
+		
 			List<String> categ_hier = new ArrayList<String>();
 			categ_hier.add(arr1.get(i).getAsJsonObject().get("aisle").toString().replace(";", " ").replaceAll("[^\\w\\s]",""));
 			p.setCategories_hierarchy(categ_hier);
