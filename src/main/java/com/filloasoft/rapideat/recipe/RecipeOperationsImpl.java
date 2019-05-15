@@ -178,7 +178,7 @@ public List<Recipe> FullRecipesSearch(String query, String cuisine, String inclu
 @Override
 public List<Recipe> getRandomRecipes(String number, String tags) throws  IOException {
 	
-	String tags2= tags.replaceAll(" ", "+").replaceAll(",", "2C");
+	String tags2= tags.replaceAll(" ", "+").replaceAll(",", "%2C");
 	
 		
 	URL url = new URL("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/random?number="+number+"&tags="+tags2);
